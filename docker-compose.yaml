@@ -1,0 +1,40 @@
+services:
+    nginx:
+        image: nginx:1.25-alpine
+        ports:
+            - "8000:80"
+            - "8443:443"  # Add SSL port
+        volumes:
+            - .:/app
+            - ./docker/dev/nginx/conf.d:/etc/nginx/conf.d:ro
+            - ./docker/dev/nginx/ssl:/etc/nginx/ssl:ro  # Add SSL certificates
+        depends_on:
+            - php
+    
+    php:
+        build:
+            context: .
+            dockerfile: docker/dev/Dockerfile
+        volumes:
+            - .:/app:cached
+            - composer-cache:/home/symfony/.composer:cached
+        working_dir: /app
+        depends_on:
+            - postgresql
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
+    
+    postgresql:
+        image: postgres:15.5-alpine
+        environment:
+            POSTGRES_DB: ${POSTGRES_DB:-app}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+            POSTGRES_USER: ${POSTGRES_USER:-symfony}
+        volumes:
+            - database-data:/var/lib/postgresql/data:rw
+        ports:
+            - "5432:5432"
+
+volumes:
+    database-data:
+    composer-cache:
