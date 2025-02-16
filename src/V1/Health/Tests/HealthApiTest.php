@@ -21,11 +21,14 @@ final class HealthApiTest extends ApiTestCase
         $response = $this->client->request('GET', '/api/v1/health', [
             'headers' => [
                 'Accept' => 'application/json',
-                'Accept-Language' => 'uk',
+                'Accept-Language' => 'en',
             ],
         ]);
 
         self::assertResponseStatusCodeSame(200);
-        self::assertJsonContains(['status' => 'ok']);
+
+        self::assertSame([
+            'status' => 'ok',
+        ], $response->toArray(false));
     }
 }
