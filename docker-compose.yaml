@@ -3,7 +3,7 @@ services:
         image: nginx:1.25-alpine
         ports:
             - "8000:80"
-            - "8443:443"  # Add SSL port
+            - "443:443"  # Add SSL port
         volumes:
             - .:/app
             - ./docker/dev/nginx/conf.d:/etc/nginx/conf.d:ro

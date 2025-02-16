@@ -11,7 +11,15 @@ RUN apk add --no-cache \
     zip \
     unzip \
     libzip-dev \
-    $PHPIZE_DEPS
+    autoconf \
+    dpkg-dev dpkg \
+    file \
+    g++ \
+    gcc \
+    libc-dev \
+    make \
+    pkgconf \
+    re2c
 
 # PHP extensions
 RUN docker-php-ext-install \
@@ -42,5 +50,9 @@ RUN mkdir -p ~/.config/fish && \
 
 # Set fish as default shell
 SHELL ["/usr/bin/fish", "-c"]
+
+# Copy php.ini and xdebug.ini configuration
+COPY docker/dev/php/conf.d/php.ini /usr/local/etc/php/conf.d/php.ini
+COPY docker/dev/php/conf.d/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 
 CMD ["php-fpm"]
